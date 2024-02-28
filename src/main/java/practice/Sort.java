@@ -11,7 +11,8 @@ public class Sort {
 
     public static void main(String[] args) {
 
-        List<Number> sortedBySelection = SortUtil.selectSort(Arrays.stream(LIST).boxed().collect(Collectors.toList()));
+        System.out.println(Arrays.toString(LIST));
+
         List<Number> sortedByMerge = SortUtil.mergeSort(Arrays.stream(LIST).boxed().collect(Collectors.toList()));
 
         System.out.println(sortedByMerge);
