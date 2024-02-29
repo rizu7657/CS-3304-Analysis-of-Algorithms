@@ -1,20 +1,98 @@
 package assignment.u4;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class ImplementingPrimsAlgorithm {
 
-    public void main(String[] args) {
-        Graphl graph = new Graphl(6);
-        graph.setEdge(0, 1, 7);
-        graph.setEdge(0, 2, 9);
-        graph.setEdge(1, 3, 5);
-        graph.setEdge(1, 4, 2);
-        graph.setEdge(1, 5, 1);
-        graph.setEdge(3, 4, 6);
-        graph.setEdge(5, 4, 2);
-        graph.setEdge(4, 2, 1);
+    public static void main(String[] args) {
+        // Given a graph, this class should calculate the total cost from the MST created by PRIM's algorithm
+        Graphl graph = new Graphl(8);
+        graph.setEdge(0, 1, 5); // Adjust from graph.setEdge(1, 2, 5);
+        graph.setEdge(0, 2, 4); // Adjust from graph.setEdge(1, 3, 4);
+        graph.setEdge(1, 2, 2); // Adjust from graph.setEdge(2, 3, 2);
+        graph.setEdge(1, 3, 3); // Adjust from graph.setEdge(2, 4, 3);
+        graph.setEdge(2, 4, 5); // Adjust from graph.setEdge(3, 5, 5);
+        graph.setEdge(3, 4, 2); // Adjust from graph.setEdge(4, 5, 2);
+        graph.setEdge(4, 5, 1); // Adjust from graph.setEdge(5, 6, 1);
+        graph.setEdge(3, 6, 6); // Adjust from graph.setEdge(4, 7, 6);
+        graph.setEdge(5, 6, 8); // Adjust from graph.setEdge(6, 7, 8);
+        graph.setEdge(6, 7, 2); // Adjust from graph.setEdge(7, 8, 2);
 
+        int[] D = new int[graph.n()];
+        int[] V = {1,2,3,4,5,6,7,8};
+
+        Prim(graph);
+    }
+
+    private static void Prim(Graph g) {
+        int n = g.n(); // Number of vertices
+        boolean[] inMST = new boolean[n]; // To keep track of vertices included in MST
+        int[] parent = new int[n]; // To store constructed MST
+        int[] key = new int[n]; // Key values used to pick minimum weight edge in cut
+
+        // Initialize all keys as INFINITE
+        Arrays.fill(key, Integer.MAX_VALUE);
+        Arrays.fill(parent, -1); // Initially set all parents to -1
+
+        // Custom comparator for the PriorityQueue
+        Comparator<Integer> vertexComparator = Comparator.comparingInt(v -> key[v]);
+
+        // PriorityQueue to store vertices based on key values
+        PriorityQueue<Integer> pq = new PriorityQueue<>(vertexComparator);
+
+        // Start from the first vertex. Let's assume 0 as the starting vertex.
+        key[0] = 0;
+        pq.add(0);
+
+        while (!pq.isEmpty()) {
+            // Extracting vertex with minimum key value
+            int u = pq.poll();
+            inMST[u] = true; // Include this vertex in MST
+
+            // Iterate through all adjacent vertices of u and update their keys
+            for (int v = 0; v < n; v++) {
+                if (g.isEdge(u, v) && !inMST[v] && g.weight(u, v) < key[v]) {
+                    // Update key value and parent of v
+                    key[v] = g.weight(u, v);
+                    parent[v] = u;
+                    if (pq.contains(v)) {
+                        pq.remove(v); // Update the priority queue
+                    }
+                    pq.add(v);
+                }
+            }
+        }
+
+        // Print the constructed MST
+        printMST(parent, n, g);
+    }
+
+    // A utility function to find the vertex with minimum key value,
+    // from the set of vertices not yet included in MST
+    private static int minKey(int[] key, boolean[] inMST, int n) {
+        int min = Integer.MAX_VALUE, minIndex = -1;
+
+        for (int v = 0; v < n; v++) {
+            if (!inMST[v] && key[v] < min) {
+                min = key[v];
+                minIndex = v;
+            }
+        }
+
+        return minIndex;
+    }
+
+    // A utility function to print the constructed MST stored in parent[]
+    private static void printMST(int[] parent, int n, Graph g) {
+        System.out.println("Edge \tWeight");
+        for (int i = 1; i < n; i++) {
+            if (parent[i] != -1) { // Check if parent exists
+                System.out.println((parent[i] + 1) + " - " + (i + 1) + "\t" + g.weight(parent[i], i));
+            }
+        }
     }
 
     private static class Graphl implements Graph {
@@ -35,6 +113,7 @@ public class ImplementingPrimsAlgorithm {
 
             for (int i = 0; i < n; i++) {
                 vertices[i] = new LinkedList<Edge>();
+                Mark[i] = 0; // Initialize all marks to 0
             }
             numEdge = 0;
         }
@@ -111,14 +190,17 @@ public class ImplementingPrimsAlgorithm {
          * Determine if an edge is in the graph
          */
         public boolean isEdge(int v, int w) {
-            Edge it = vertices[v].getFirst();
+            if (vertices[v].isEmpty()) {
+                return false;
+            }
 
             // Check if j is the current neighbor in the list
-            if ((it != null) && (it.vertex() == w)) {
+            Edge it = vertices[v].getFirst();
+            if (it != null && it.vertex() == w) {
                 return true;
             }
 
-            // Check whole list
+            // Check the whole list
             for (Edge edge : vertices[v]) {
                 if (edge.vertex() == w) {
                     return true;
@@ -154,7 +236,7 @@ public class ImplementingPrimsAlgorithm {
         }
     }
 
-    private class Edge {
+    private static class Edge {
         private int vert, wt;
 
         public Edge(int v, int w) {

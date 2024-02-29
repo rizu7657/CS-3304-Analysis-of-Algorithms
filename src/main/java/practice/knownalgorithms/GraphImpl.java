@@ -46,7 +46,7 @@ public class GraphImpl {
     /**
      * Compute a minimal-cost spanning tree
      */
-    static void Prim(Graph G, int s, int[] D, int[] V) {
+    public static void PrimO(Graph G, int s, int[] D, int[] V) {
         List<Edge> mst = new ArrayList<>();
 
         for (int i = 0; i < G.n(); i++)   // Initialize
@@ -56,14 +56,60 @@ public class GraphImpl {
 
         for (int i = 0; i < G.n(); i++) { // Process the vertices
             int v = minVertex(G, D);
+
             G.setMark(v, VISITED);
+
             if (v != s) AddEdgetoMST(V[v], v, mst);
+
             if (D[v] == Integer.MAX_VALUE) return; // Unreachable
+
             for (int w = G.first(v); w < G.n(); w = G.next(v, w))
                 if (D[w] > G.weight(v, w)) {
                     D[w] = G.weight(v, w);
                     V[w] = v;
                 }
+        }
+    }
+
+    /**
+     * Prims’s MST algorithm: priority queue version
+     */
+    public static void Prim(Graph G, int s, int[] D, int[] V) {
+        int mst = Integer.MAX_VALUE;
+
+        int v; // The current vertex
+
+        DijkElem[] E = new DijkElem[G.e()]; // Heap for edges
+
+        MinHeap<DijkElem> H = new MinHeap<DijkElem>(E, G.n(), G.e());
+
+        for (int i = 0; i < G.n(); i++) // Initialize
+            D[i] = Integer.MAX_VALUE; // distances
+
+        D[s] = 0;
+
+        for (int i = 0; i < G.n(); i++) { // Now, get distances
+
+            do {
+                v = (H.removemin()).vertex();
+            } while (G.getMark(v) == VISITED);
+
+            G.setMark(v, VISITED);
+
+            if (v != s) {
+                mst = mst + G.weight(V[v], v);
+            }
+
+            if (D[v] == Integer.MAX_VALUE) return; // Unreachable
+
+            for (int w = G.first(v); w < G.n(); w = G.next(v, w)) {
+
+                if (D[w] > G.weight(v, w)) { // Update D
+                    D[w] = G.weight(v, w);
+                    V[w] = v; // Where it came from
+                    H.insert(new DijkElem(w, D[w]));
+                }
+            }
         }
     }
 
