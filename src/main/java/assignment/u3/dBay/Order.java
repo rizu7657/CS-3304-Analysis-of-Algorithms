@@ -1,4 +1,4 @@
-package dBay;
+package assignment.u3.dBay;
 
 public class Order {
     private Long id;

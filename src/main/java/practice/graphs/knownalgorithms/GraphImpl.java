@@ -1,7 +1,7 @@
-package practice.knownalgorithms;
+package practice.graphs.knownalgorithms;
 
 import adt.Graph;
-import impl.Edge;
+import impl.Graphs.Edge;
 import impl.MinHeap;
 
 import java.util.ArrayList;

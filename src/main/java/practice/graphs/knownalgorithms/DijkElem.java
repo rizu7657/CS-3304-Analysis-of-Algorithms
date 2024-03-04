@@ -1,4 +1,4 @@
-package practice.knownalgorithms;
+package practice.graphs.knownalgorithms;
 
 public class DijkElem implements Comparable<DijkElem> {
     private final int vertex;

@@ -1,12 +1,9 @@
-package practice;
+package practice.graphs.knownalgorithms;
 
-import impl.Graphl;
-import practice.knownalgorithms.GraphImpl;
+import impl.Graphs.Graphl;
+import practice.graphs.knownalgorithms.GraphImpl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-
-import static practice.knownalgorithms.GraphImpl.Kruskal;
 
 public class GraphTest {
     public static void main(String[] args) {
