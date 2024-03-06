@@ -152,8 +152,8 @@ public class KnapsackProblem {
         }
 
         System.out.println(mat[n][K]); // Final answer
-        for (int[] ints : mat) {
-            System.out.println(Arrays.toString(ints));
+        for (int i = 0; i < mat.length; i++) {
+            System.out.printf("item %s: %s\n", i == 0 ? "0" : weights[i-1], Arrays.toString(mat[i]));
         }
     }
 
