@@ -16,13 +16,6 @@ public class KnapsackProblem {
          **/
         int[][] matrix = new int[n + 1][W + 1];
 
-        // Initialize the matrix
-//        for (int i = 0; i < matrix.length; i++) {
-//            for (int j = 0; j < matrix[i].length; j++) {
-//                matrix[i][j] = 0;
-//            }
-//        }
-
         // Start at 1 because of extra row and column
         for (int item = 1; item <= n; item++) {
 
